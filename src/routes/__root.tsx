@@ -78,12 +78,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "fog.chess" },
-      { name: "description", content: "Fog-of-war chess with a terminal UI. Place your pieces however you want, hide them from your opponent, and outguess them to victory." },
-      { property: "og:title", content: "fog.chess" },
-      { property: "og:description", content: "Fog-of-war chess with a terminal UI." },
+      { title: "fog.chess — hidden-piece chess with terminal UI" },
+      { name: "description", content: "Play fog-of-war chess against an AI. Hide your pieces, guess your opponent's, and outplay them on a terminal-styled board." },
+      { property: "og:title", content: "fog.chess — hidden-piece chess with terminal UI" },
+      { property: "og:description", content: "Play fog-of-war chess against an AI. Hide your pieces, guess your opponent's, and outplay them on a terminal-styled board." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "fog.chess — hidden-piece chess with terminal UI" },
+      { name: "twitter:description", content: "Play fog-of-war chess against an AI. Hide your pieces, guess your opponent's, and outplay them on a terminal-styled board." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1234ec40-727a-4ef2-8430-42ec3906b576/id-preview-f57644c8--6ccaf33a-1568-4aae-832f-c1cf8c8a7daa.lovable.app-1784420230970.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1234ec40-727a-4ef2-8430-42ec3906b576/id-preview-f57644c8--6ccaf33a-1568-4aae-832f-c1cf8c8a7daa.lovable.app-1784420230970.png" },
     ],
     links: [
       {

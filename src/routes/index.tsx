@@ -7,8 +7,8 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "fog.chess — hidden-piece chess with terminal UI" },
       { name: "description", content: "Play fog-of-war chess against an AI. Hide your pieces, guess your opponent's, and outplay them on a terminal-styled board." },
-      { property: "og:title", content: "fog.chess" },
-      { property: "og:description", content: "Fog-of-war chess in your browser." },
+      { property: "og:title", content: "fog.chess — hidden-piece chess with terminal UI" },
+      { property: "og:description", content: "Play fog-of-war chess against an AI. Hide your pieces, guess your opponent's, and outplay them on a terminal-styled board." },
       { property: "og:type", content: "website" },
     ],
   }),
