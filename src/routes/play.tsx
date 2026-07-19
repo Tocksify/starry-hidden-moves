@@ -118,18 +118,31 @@ function PlayPage() {
     sfx.ready();
   }, [playerReady, setupTimeLeft, phase, playerBoard, playerColor, aiBoard]);
 
+  // Timestamp-based clock: captures remaining time at turn start, computes
+  // elapsed wall-clock time so AI thread-blocking doesn't stall the display.
+  const clockWRef = useRef(initial * 1000);
+  const clockBRef = useRef(initial * 1000);
+  useEffect(() => { clockWRef.current = clockW; }, [clockW]);
+  useEffect(() => { clockBRef.current = clockB; }, [clockB]);
+
   useEffect(() => {
     if (phase !== "play" || result || initial === 0) return;
+    // Capture the active clock at the START of this turn (not inside the interval).
+    const startClock = turn === "w" ? clockWRef.current : clockBRef.current;
+    const startTime  = Date.now();
     const id = setInterval(() => {
-      if (turn === "w") setClockW((c) => Math.max(0, c - 100));
-      else setClockB((c) => Math.max(0, c - 100));
-      if ((turn === "w" ? clockW : clockB) - 100 <= 0) {
+      const elapsed   = Date.now() - startTime;
+      const remaining = Math.max(0, startClock - elapsed);
+      if (turn === "w") { setClockW(remaining); clockWRef.current = remaining; }
+      else              { setClockB(remaining); clockBRef.current = remaining; }
+      if (remaining <= 0) {
         setResult(`${turn === "w" ? "Black" : "White"} wins on time`);
         sfx.gameEnd();
       }
     }, 100);
     return () => clearInterval(id);
-  }, [turn, phase, result, initial, clockW, clockB]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [turn, phase, result, initial]); // clockW/clockB intentionally omitted — captured at turn start
 
   const applyMove = useCallback((m: Move) => {
     const chess = chessRef.current!;
