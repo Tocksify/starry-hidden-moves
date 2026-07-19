@@ -18,7 +18,7 @@ function AuthedLayout() {
     }
   }, [session, loading, navigate]);
 
-  if (loading) return <div className="p-6 text-terminal-dim">> loading session…</div>;
+  if (loading) return <div className="p-6 text-terminal-dim">{'>'} loading session…</div>;
   if (!session) return null;
 
   return (
