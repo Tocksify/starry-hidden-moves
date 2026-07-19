@@ -49,14 +49,19 @@ function Home() {
 
   return (
     <div className="min-h-screen p-6 md:p-10 max-w-4xl mx-auto">
-      <header className="mb-8">
-        <div className="text-xs text-terminal-dim">~ / fog.chess $</div>
-        <h1 className="text-4xl md:text-5xl font-bold text-terminal-bright tracking-tight" style={{ textShadow: "0 0 24px var(--color-terminal)" }}>
-          fog.chess<span className="animate-pulse text-terminal">_</span>
-        </h1>
-        <p className="mt-2 text-terminal-dim text-sm">
-          hidden-piece chess &middot; set up your army &middot; right-click enemy ★ to mark it
-        </p>
+      <header className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <div className="text-xs text-terminal-dim">~ / fog.chess $</div>
+          <h1 className="text-4xl md:text-5xl font-bold text-terminal-bright tracking-tight" style={{ textShadow: "0 0 24px var(--color-terminal)" }}>
+            fog.chess<span className="animate-pulse text-terminal">_</span>
+          </h1>
+          <p className="mt-2 text-terminal-dim text-sm">
+            hidden-piece chess &middot; set up your army &middot; right-click enemy ★ to mark it
+          </p>
+        </div>
+        <Link to="/lobby" className="border border-terminal-bright text-terminal-bright px-3 py-2 text-xs uppercase hover:bg-terminal hover:text-background">
+          ▶ online lobby
+        </Link>
       </header>
 
       <section className="term-panel p-6">
