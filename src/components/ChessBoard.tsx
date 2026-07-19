@@ -5,13 +5,12 @@ import {
   type PieceType,
   FILES,
   sq,
-  parseSquare,
   isInHomeRanks,
   canPlace,
-  glyph,
   PIECE_GLYPH,
   PIECE_GLYPH_DARK,
 } from "@/lib/chess-engine";
+import { pieceImage } from "@/lib/pieces";
 
 export type Marks = Partial<Record<Square, PieceType | null>>;
 
@@ -19,15 +18,12 @@ interface Props {
   board: BoardMap;
   playerColor: Color;
   phase: "setup" | "play" | "over";
-  // Setup phase:
   selectedPiece?: PieceType | null;
   onPlace?: (target: Square, piece: PieceType) => void;
   onPickup?: (from: Square) => void;
-  // Play phase:
   legalTargets?: Square[];
   selectedSquare?: Square | null;
   onSquareClick?: (square: Square) => void;
-  // Fog of war:
   hideOpponent?: boolean;
   marks?: Marks;
   onMarkOpponent?: (square: Square) => void;
@@ -44,7 +40,6 @@ export function ChessBoard(props: Props) {
     hideOpponent, marks = {}, onMarkOpponent, lastMove, inCheck,
   } = props;
 
-  // Render orientation: player's color at bottom.
   const ranks = playerColor === "w" ? [8, 7, 6, 5, 4, 3, 2, 1] : [1, 2, 3, 4, 5, 6, 7, 8];
   const files = playerColor === "w" ? [0, 1, 2, 3, 4, 5, 6, 7] : [7, 6, 5, 4, 3, 2, 1, 0];
 
@@ -55,6 +50,8 @@ export function ChessBoard(props: Props) {
     const check = canPlace(selectedPiece, hoverSq, playerColor, board);
     return check.ok ? null : check.reason;
   }, [phase, selectedPiece, hoverSq, playerColor, board]);
+
+  const opponentColor: Color = playerColor === "w" ? "b" : "w";
 
   return (
     <div className="inline-block term-panel p-2 select-none">
@@ -105,22 +102,43 @@ export function ChessBoard(props: Props) {
               const opponentPiece = p && p.color !== playerColor;
               const showAsStar = hideOpponent && opponentPiece;
               const mark = marks[square];
-              const displayGlyph = p
-                ? showAsStar
-                  ? mark
-                    ? (PIECE_GLYPH_DARK[mark])
-                    : "★"
-                  : glyph(p)
-                : "";
-              const pieceColor = p
-                ? showAsStar
-                  ? mark
-                    ? "text-terminal-dim"
-                    : "text-danger"
-                  : p.color === "w"
-                  ? "text-terminal-bright"
-                  : "text-terminal"
-                : "";
+
+              let content: React.ReactNode = null;
+              if (p) {
+                if (showAsStar) {
+                  if (mark) {
+                    // Guessed piece — render as a red-tinted opponent piece image.
+                    content = (
+                      <div className="relative w-full h-full flex items-center justify-center">
+                        <img
+                          src={pieceImage(mark, opponentColor)}
+                          alt=""
+                          draggable={false}
+                          className="w-[82%] h-[82%]"
+                          style={{ filter: "drop-shadow(0 0 4px var(--color-danger)) brightness(0.9) sepia(1) saturate(6) hue-rotate(-30deg)" }}
+                        />
+                        <span className="absolute bottom-0 right-0.5 text-[9px] text-danger font-bold">?</span>
+                      </div>
+                    );
+                  } else {
+                    content = (
+                      <span className="text-terminal text-3xl" style={{ textShadow: "0 0 8px var(--color-terminal)" }}>★</span>
+                    );
+                  }
+                } else {
+                  content = (
+                    <img
+                      src={pieceImage(p.type, p.color)}
+                      alt=""
+                      draggable={false}
+                      className="w-[82%] h-[82%]"
+                      style={{ filter: p.color === "w"
+                        ? "drop-shadow(0 0 3px var(--color-terminal-bright))"
+                        : "drop-shadow(0 0 3px var(--color-terminal-dim)) brightness(0.95)" }}
+                    />
+                  );
+                }
+              }
 
               return (
                 <button
@@ -131,20 +149,18 @@ export function ChessBoard(props: Props) {
                   onMouseEnter={() => setHoverSq(square)}
                   onMouseLeave={() => setHoverSq((s) => s === square ? null : s)}
                   className={[
-                    "relative w-14 h-14 flex items-center justify-center font-mono text-3xl transition-colors",
+                    "relative w-14 h-14 flex items-center justify-center font-mono transition-colors",
                     bg,
                     isSelected && "outline outline-2 outline-terminal-bright z-10",
-                    isLegal && "after:absolute after:inset-0 after:bg-terminal/20",
+                    isLegal && "after:absolute after:inset-2 after:rounded-full after:bg-terminal/30 after:pointer-events-none",
                     isLast && "ring-1 ring-terminal/60",
                     isCheck && "ring-2 ring-danger",
                     setupTargetHint && !p && "outline outline-1 outline-terminal-dim/40",
                     setupInvalidHover && "outline outline-2 outline-danger",
                     setupValidHover && !p && "outline outline-2 outline-terminal-bright",
-                    pieceColor,
                   ].filter(Boolean).join(" ")}
-                  style={{ textShadow: p ? "0 0 8px currentColor" : undefined }}
                 >
-                  {displayGlyph}
+                  {content}
                 </button>
               );
             }),
