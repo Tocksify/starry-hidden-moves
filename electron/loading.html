@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>fog.chess</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #061006;
+      color: #39ff14;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      user-select: none;
+    }
+    h1 {
+      font-size: 3rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+    .sub {
+      font-size: 0.85rem;
+      opacity: 0.6;
+      margin-bottom: 2.5rem;
+      letter-spacing: 0.1em;
+    }
+    .dots span {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #39ff14;
+      margin: 0 5px;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50%       { opacity: 1;   transform: scale(1.2); }
+    }
+    .status {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      opacity: 0.4;
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+  <h1>fog.chess_</h1>
+  <p class="sub">hidden-piece chess</p>
+  <div class="dots">
+    <span></span><span></span><span></span>
+  </div>
+  <p class="status">starting local server…</p>
+</body>
+</html>

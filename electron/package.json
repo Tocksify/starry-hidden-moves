@@ -1,0 +1,53 @@
+{
+  "name": "fog-chess",
+  "productName": "fog.chess",
+  "version": "1.0.0",
+  "description": "Hidden-piece chess variant — play locally or online",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist":  "electron-builder --win --x64"
+  },
+  "devDependencies": {
+    "electron":         "^35.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId":       "dev.fogchess.app",
+    "productName": "fog.chess",
+    "copyright":   "Copyright © 2026",
+    "directories": {
+      "output": "../dist-electron"
+    },
+    "files": [
+      "main.js",
+      "loading.html",
+      "error.html"
+    ],
+    "extraResources": [
+      {
+        "from":   "../.output",
+        "to":     "app-server",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "config.json",
+        "to":   "config.json"
+      }
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ],
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick":           false,
+      "allowToChangeInstallationDirectory": true,
+      "installerHeaderIcon": "icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
