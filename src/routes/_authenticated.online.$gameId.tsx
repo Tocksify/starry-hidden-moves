@@ -204,7 +204,7 @@ function OnlineGame() {
 
   const handleSquareClick = (square: Square) => {
     if (g.status !== "playing") return;
-    if (g.turn !== myColor || g.status === "over") return;
+    if (g.turn !== myColor) return;
     const myPiece = view.myBoard[square as keyof BoardMap];
     if (selectedSquare) {
       if (legalTargets.includes(square)) {
