@@ -1,0 +1,5 @@
+{
+  "name": "fog-chess",
+  "main": "party/index.ts",
+  "compatibilityDate": "2026-07-19"
+}

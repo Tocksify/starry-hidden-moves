@@ -19,6 +19,16 @@ export default defineConfig({
       host: "0.0.0.0",
       port: 5000,
       allowedHosts: true,
+      // Proxy PartyKit dev server (port 1999) through the same Vite dev port.
+      // This lets the browser reach the PartyKit WS server via the Replit preview
+      // without needing a separate port open.
+      proxy: {
+        "/parties": {
+          target: "http://localhost:1999",
+          ws: true,
+          changeOrigin: true,
+        },
+      },
     },
   },
 });

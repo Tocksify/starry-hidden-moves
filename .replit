@@ -18,6 +18,10 @@ author = "agent"
 task = "workflow.run"
 args = "Start application"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "PartyKit dev server"
+
 [[workflows.workflow]]
 name = "Start application"
 author = "agent"
@@ -30,9 +34,25 @@ waitForPort = 5000
 [workflows.workflow.metadata]
 outputType = "webview"
 
+[[workflows.workflow]]
+name = "PartyKit dev server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx partykit dev"
+
+[[ports]]
+localPort = 1999
+externalPort = 3000
+
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 9229
+externalPort = 3003
 
 [deployment]
 deploymentTarget = "autoscale"
