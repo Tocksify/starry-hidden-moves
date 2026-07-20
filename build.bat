@@ -1,18 +1,12 @@
 @echo off
 :: ============================================================
-::  fog.chess — Windows Electron build script
+::  fog.chess -- Windows Electron build script
 ::  Run this once to enter your credentials and produce a .exe
 ::  installer in dist-electron\
-:: ============================================================
 ::
 ::  Prerequisites (must be in PATH):
 ::    Node.js 18+  https://nodejs.org
 ::    npm          (bundled with Node.js)
-::
-::  You will also need accounts / credentials for:
-::    Supabase  https://supabase.com   (database + auth)
-::    PartyKit  https://partykit.io   (real-time multiplayer)
-::
 :: ============================================================
 
 title fog.chess builder
@@ -37,18 +31,23 @@ if errorlevel 1 (
     exit /b 1
 )
 echo  [OK] npm found.
-
 echo.
+
+:: ============================================================
+::  STEP 1 -- Supabase credentials
+::  Get these from https://supabase.com/dashboard
+::  Project Settings > API
+:: ============================================================
 echo  ============================================================
-echo   STEP 1 — Supabase credentials
+echo   STEP 1 -- Supabase credentials
 echo   Get these from https://supabase.com/dashboard
 echo   Project Settings ^> API
 echo  ============================================================
 echo.
 echo  You need THREE values:
-echo    1. Project URL         (looks like: https://xxxxxxxxxxxx.supabase.co)
-echo    2. anon / publishable key  (starts with: sb_publishable_  or  eyJ...)
-echo    3. service_role key    (starts with: sb_secret_  or  eyJ... — keep this private!)
+echo    1. Project URL         (e.g. https://xxxxxxxxxxxx.supabase.co)
+echo    2. anon / publishable key  (starts with sb_publishable_ or eyJ...)
+echo    3. service_role key    (starts with sb_secret_ or eyJ... -- keep private!)
 echo.
 
 set /p SUPABASE_URL="  Supabase Project URL: "
@@ -57,29 +56,27 @@ set /p SUPABASE_SVC="  Supabase service_role key: "
 
 echo.
 echo  ============================================================
-echo   STEP 2 — PartyKit (real-time multiplayer)
-echo   https://partykit.io — free tier available
+echo   STEP 2 -- PartyKit (real-time multiplayer)
+echo   https://partykit.io -- free tier available
 echo  ============================================================
 echo.
-echo  PartyKit powers live move sync between opponents.
-echo  You need to deploy the party server once:
-echo.
+echo  Deploy your PartyKit server once with:
 echo    npx partykit deploy
 echo.
-echo  After deploying, PartyKit will print a host like:
+echo  After deploying it prints a host like:
 echo    fog-chess.YOUR_USERNAME.partykit.dev
 echo.
-echo  If you skip this, vs-AI mode still works but online play won't.
+echo  Press Enter to skip if you only need vs-AI mode.
 echo.
-set /p PARTYKIT_HOST="  PartyKit host (or press Enter to skip): "
+set /p PARTYKIT_HOST="  PartyKit host (or Enter to skip): "
 
 echo.
 echo  ============================================================
-echo   STEP 3 — Building fog.chess
+echo   STEP 3 -- Building fog.chess
 echo  ============================================================
 echo.
 
-:: Write .env so Vite bakes VITE_* vars into the client bundle at build time
+:: Write .env so Vite bakes VITE_* vars into the client bundle
 echo Writing .env...
 (
     echo SUPABASE_URL=%SUPABASE_URL%
@@ -99,7 +96,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo Building fog.chess ^(this takes 1-2 minutes^)...
+echo Building fog.chess (this takes 1-2 minutes)...
 call npm run build
 if errorlevel 1 (
     echo.
@@ -108,14 +105,13 @@ if errorlevel 1 (
     exit /b 1
 )
 
-:: Write electron/config.json with runtime credentials.
-:: VITE_* vars are already baked into the bundle; config.json carries the
-:: server-side keys that the Nitro SSR process needs at runtime.
+:: Write electron\config.json with the runtime server credentials.
+:: VITE_* vars are baked into the bundle above; config.json carries
+:: the server-side keys that the Nitro SSR process needs at runtime.
 echo Writing electron\config.json...
-node -e "const fs=require('fs');const cfg={SUPABASE_URL:process.env.SUPABASE_URL,VITE_SUPABASE_PUBLISHABLE_KEY:process.env.SUPABASE_ANON,SUPABASE_SERVICE_ROLE_KEY:process.env.SUPABASE_SVC};fs.writeFileSync('electron\\\\config.json',JSON.stringify(cfg,null,2))" 2>nul
-
-:: Fallback plain-text write if Node approach fails (rare edge case)
-if not exist electron\config.json (
+node -e "var fs=require('fs');var cfg={SUPABASE_URL:process.env.SUPABASE_URL,VITE_SUPABASE_PUBLISHABLE_KEY:process.env.SUPABASE_ANON,SUPABASE_SERVICE_ROLE_KEY:process.env.SUPABASE_SVC};fs.writeFileSync('electron\\config.json',JSON.stringify(cfg,null,2));"
+if errorlevel 1 (
+    echo  WARNING: Could not write config.json via node, using fallback...
     (
         echo {
         echo   "SUPABASE_URL": "%SUPABASE_URL%",
@@ -127,7 +123,7 @@ if not exist electron\config.json (
 
 echo.
 echo  ============================================================
-echo   STEP 4 — Packaging .exe
+echo   STEP 4 -- Packaging .exe
 echo  ============================================================
 echo.
 
@@ -143,7 +139,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo Building installer (downloads Electron ~200 MB on first run)...
+echo Building installer (downloads Electron ~200MB on first run)...
 call npm run dist
 if errorlevel 1 (
     echo.
@@ -159,10 +155,10 @@ echo.
 echo  ============================================================
 echo   Done!
 echo.
-echo   Installer:  dist-electron\fog.chess Setup 1.0.0.exe
+echo   Installer: dist-electron\fog.chess Setup 1.0.0.exe
 echo.
-echo   Share that file with anyone — it installs fog.chess and
-echo   runs it with YOUR Supabase + PartyKit backend.
+echo   Share that file -- it installs fog.chess with YOUR
+echo   Supabase and PartyKit backend baked in.
 echo  ============================================================
 echo.
 pause
