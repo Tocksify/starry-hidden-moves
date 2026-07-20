@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "WdJCTFM_Wp4VjqyV04qSo"
+uri = "file://electron/icon_preview.png"
+type = "image"
+title = "fog.chess icon — Lichess wQ 256×256"
