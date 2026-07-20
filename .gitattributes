@@ -1,0 +1,6 @@
+# Force Windows line endings for batch files so cmd.exe parses them correctly
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+
+# Everything else uses the platform default
+*      text=auto
